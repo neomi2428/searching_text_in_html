@@ -33,16 +33,48 @@ public class SearchingTextInHTML {
 		Elements a = extractATag(targetPage);
 		saveValidPage(a);
 	}
+
+	/**
+	 * validate link address
+	 * @param link link address
+	 * @return valid or not
+	 */
+	public boolean validatePage(String link) {
+		if(link.equals("/")) { return false; }
+		if(!link.startsWith("/")) { return false; }
+
+		/*
+		if(link.startsWith("http://")) { return false; }
+		if(link.startsWith("https://")) { return false; }
+		*/
+
+		return true;
+	}
 	
+	/**
+	 * save valid page into queue
+	 * @param a a tag elements
+	 */
 	public void saveValidPage(Elements a) {
 		ListIterator<Element> iterator = a.listIterator();
 		while(iterator.hasNext()) {
 			Element el = iterator.next();
 			String href = el.attr("href");
-			System.out.println(href);
+
+			if(validatePage(href)) {
+				System.out.println("[true] " + href);
+			} else {
+				System.out.println("[false] " + href);
+			}
 		}
 	}
 
+	/**
+	 * extract a tags in html page(s)
+	 * @param targetPage target html page
+	 * @return a tag elements
+	 * @throws IOException 
+	 */
 	public Elements extractATag(String targetPage) throws IOException {
 		Document doc = Jsoup.connect(targetPage).get();
 		return doc.getElementsByTag("a");
