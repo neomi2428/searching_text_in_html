@@ -2,9 +2,11 @@ package searchingtextinhtml;
 
 import java.io.IOException;
 import java.util.LinkedList;
+import java.util.ListIterator;
 import java.util.Queue;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 /**
@@ -29,12 +31,16 @@ public class SearchingTextInHTML {
 		if(null == targetPage) { return; }
 
 		Elements a = extractATag(targetPage);
-		System.out.println(a);
 		saveValidPage(a);
 	}
 	
 	public void saveValidPage(Elements a) {
-
+		ListIterator<Element> iterator = a.listIterator();
+		while(iterator.hasNext()) {
+			Element el = iterator.next();
+			String href = el.attr("href");
+			System.out.println(href);
+		}
 	}
 
 	public Elements extractATag(String targetPage) throws IOException {
