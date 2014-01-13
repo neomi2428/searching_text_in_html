@@ -37,16 +37,12 @@ public class SearchingTextInHTML {
 	/**
 	 * validate link address
 	 * @param link link address
-	 * @return valid or not
+	 * @return false: "http://web.address", "https://web.address", "mailto:mail@address", "/", "#blah-blah"
+	 * 			true: "/page/address"
 	 */
 	public boolean validatePage(String link) {
 		if(link.equals("/")) { return false; }
 		if(!link.startsWith("/")) { return false; }
-
-		/*
-		if(link.startsWith("http://")) { return false; }
-		if(link.startsWith("https://")) { return false; }
-		*/
 
 		return true;
 	}
