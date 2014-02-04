@@ -1,9 +1,8 @@
 package searchingtextinhtml;
 
 import java.io.IOException;
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.ListIterator;
-import java.util.Queue;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -17,21 +16,27 @@ import org.jsoup.select.Elements;
  */
 public class SearchingTextInHTML {
 	public static String BASE_URL = "http://career.stonybrook.edu";
-	public static Queue PAGE_QUEUE = new LinkedList();
+	public static ArrayList PAGE_LIST = new ArrayList<String>();
 	public static String CURRENT_PAGE = "";
+	public static int INDEX = 0;
 
 	public static void main(String[] args) throws IOException {
 		SearchingTextInHTML app = new SearchingTextInHTML();
-		PAGE_QUEUE.add(BASE_URL);
+		PAGE_LIST.add("/");
 		app.collectPage();
 	}
 
 	public void collectPage() throws IOException {
-		String targetPage = (String) PAGE_QUEUE.poll();
-		if(null == targetPage) { return; }
+		while(INDEX < PAGE_LIST.size()) {
+			CURRENT_PAGE = (String) PAGE_LIST.get(INDEX++);
+			if(null == CURRENT_PAGE) { return; }
+			CURRENT_PAGE = BASE_URL + CURRENT_PAGE;
 
-		Elements a = extractATag(targetPage);
-		saveValidPage(a);
+			Elements a = extractATag(CURRENT_PAGE);
+			saveValidPage(a);
+		}
+
+		System.out.println(PAGE_LIST.size());
 	}
 
 	/**
@@ -43,6 +48,7 @@ public class SearchingTextInHTML {
 	public boolean validatePage(String link) {
 		if(link.equals("/")) { return false; }
 		if(!link.startsWith("/")) { return false; }
+		if(PAGE_LIST.contains(link) && PAGE_LIST.contains(CURRENT_PAGE)) { return false; }
 
 		return true;
 	}
@@ -59,6 +65,7 @@ public class SearchingTextInHTML {
 
 			if(validatePage(href)) {
 				System.out.println("[true] " + href);
+				PAGE_LIST.add(href);
 			} else {
 				System.out.println("[false] " + href);
 			}
