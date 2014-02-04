@@ -36,20 +36,23 @@ public class SearchingTextInHTML {
 			saveValidPage(a);
 		}
 
-		System.out.println(PAGE_LIST.size());
+		System.out.println("Page list size: " + PAGE_LIST.size());
+		System.out.println("Index: " + INDEX);
 	}
 
 	/**
 	 * validate link address
 	 * @param link link address
-	 * @return false: "http://web.address", "https://web.address", "mailto:mail@address", "/", "#blah-blah", "*.pdf", infinite loop
+	 * @return false: "http://web.address", "https://web.address", "mailto:mail@address", "/", "#blah-blah", 
+	 * 				   infinite loop, image file, document file
 	 * 			true: "/page/address"
 	 */
 	public boolean validatePage(String link) {
 		if(link.equals("/")) { return false; }
 		if(!link.startsWith("/")) { return false; }
 		if(PAGE_LIST.contains(link) && PAGE_LIST.contains(CURRENT_PAGE)) { System.out.println("avoiding infinite loop"); return false; }
-		if(link.endsWith(".pdf") || link.endsWith(".doc")) { return false; }
+		if(link.contains(".pdf") || link.contains(".doc")) { return false; }
+		if(link.contains(".JPG#overlay-context") || link.endsWith(".JPG")) { return false; }
 
 		return true;
 	}
