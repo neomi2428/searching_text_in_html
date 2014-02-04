@@ -30,9 +30,9 @@ public class SearchingTextInHTML {
 		while(INDEX < PAGE_LIST.size()) {
 			CURRENT_PAGE = (String) PAGE_LIST.get(INDEX++);
 			if(null == CURRENT_PAGE) { return; }
-			CURRENT_PAGE = BASE_URL + CURRENT_PAGE;
+			String targetPage = BASE_URL + CURRENT_PAGE;
 
-			Elements a = extractATag(CURRENT_PAGE);
+			Elements a = extractATag(targetPage);
 			saveValidPage(a);
 		}
 
@@ -42,13 +42,14 @@ public class SearchingTextInHTML {
 	/**
 	 * validate link address
 	 * @param link link address
-	 * @return false: "http://web.address", "https://web.address", "mailto:mail@address", "/", "#blah-blah"
+	 * @return false: "http://web.address", "https://web.address", "mailto:mail@address", "/", "#blah-blah", "*.pdf", infinite loop
 	 * 			true: "/page/address"
 	 */
 	public boolean validatePage(String link) {
 		if(link.equals("/")) { return false; }
 		if(!link.startsWith("/")) { return false; }
-		if(PAGE_LIST.contains(link) && PAGE_LIST.contains(CURRENT_PAGE)) { return false; }
+		if(PAGE_LIST.contains(link) && PAGE_LIST.contains(CURRENT_PAGE)) { System.out.println("avoiding infinite loop"); return false; }
+		if(link.endsWith(".pdf") || link.endsWith(".doc")) { return false; }
 
 		return true;
 	}
@@ -64,10 +65,10 @@ public class SearchingTextInHTML {
 			String href = el.attr("href");
 
 			if(validatePage(href)) {
-				System.out.println("[true] " + href);
+				//System.out.println("[true] " + href);
 				PAGE_LIST.add(href);
 			} else {
-				System.out.println("[false] " + href);
+				//System.out.println("[false] " + href);
 			}
 		}
 	}
@@ -78,9 +79,17 @@ public class SearchingTextInHTML {
 	 * @return a tag elements
 	 * @throws IOException 
 	 */
-	public Elements extractATag(String targetPage) throws IOException {
-		Document doc = Jsoup.connect(targetPage).get();
-		return doc.getElementsByTag("a");
+	public Elements extractATag(String targetPage) {
+		try {
+			Document doc = Jsoup.connect(targetPage).get();
+			return doc.getElementsByTag("a");
+		} catch (IOException ex) {
+			System.out.println("Broken link: " + targetPage);
+			System.out.println("Page list size: " + PAGE_LIST.size());
+			System.out.println("Index: " + INDEX);
+			System.exit(0);
+			return null;
+		}
 	}
 
 	/**
