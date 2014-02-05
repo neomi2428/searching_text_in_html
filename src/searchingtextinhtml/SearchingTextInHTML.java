@@ -24,6 +24,7 @@ public class SearchingTextInHTML {
 		SearchingTextInHTML app = new SearchingTextInHTML();
 		PAGE_LIST.add("/");
 		app.collectPage();
+		Writer.writeToFile("./output.txt", PAGE_LIST);
 	}
 
 	public void collectPage() throws IOException {
