@@ -51,8 +51,11 @@ public class SearchingTextInHTML {
 	public boolean validatePage(String link) {
 		if(link.equals("/")) { return false; }
 		if(!link.startsWith("/")) { return false; }
-		if(PAGE_LIST.contains(link) && PAGE_LIST.contains(CURRENT_PAGE)) { System.out.println("avoiding infinite loop"); return false; }
-		if(link.contains(".pdf") || link.contains(".doc")) { return false; }
+		if(PAGE_LIST.contains(link) && PAGE_LIST.contains(CURRENT_PAGE)) { 
+			//System.out.println("avoiding infinite loop"); 
+			return false; 
+		}
+		if(link.contains(".pdf") || link.contains(".doc") || link.contains(".pub")) { return false; }
 		if(link.contains(".JPG#overlay-context") || link.endsWith(".JPG")) { return false; }
 
 		return true;
