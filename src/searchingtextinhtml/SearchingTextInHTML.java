@@ -24,7 +24,20 @@ public class SearchingTextInHTML {
 		SearchingTextInHTML app = new SearchingTextInHTML();
 		PAGE_LIST.add("/");
 		app.collectPage();
-		Writer.writeToFile("./output.txt", PAGE_LIST);
+		Writer.writeToFile("./whole_pages.txt", PAGE_LIST);
+
+		// test for finding certain characters
+		for(int i = 0; i < PAGE_LIST.size(); ++i) {
+			String targetURL = BASE_URL + PAGE_LIST.get(i);
+			Document doc = Jsoup.connect(targetURL).get();
+			Elements body = doc.select("body");
+			String text = body.text();
+			
+			// Think of capital letter or small case
+			if (text.contains("Junhee Park")) {
+				System.out.println(targetURL);
+			}
+		}
 	}
 
 	public void collectPage() throws IOException {
@@ -70,6 +83,8 @@ public class SearchingTextInHTML {
 		while(iterator.hasNext()) {
 			Element el = iterator.next();
 			String href = el.attr("href");
+
+
 
 			if(validatePage(href)) {
 				//System.out.println("[true] " + href);
